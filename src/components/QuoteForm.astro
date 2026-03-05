@@ -25,7 +25,19 @@ const cardClasses = isHero
 </div>
 
 <!-- Reliable HubSpot v2 Embed Script -->
-<script is:inline>
+<script>
+  // Add type declarations for HubSpot global
+  declare global {
+    interface Window {
+      hbsptScriptAdded?: boolean;
+      hbspt?: {
+        forms: {
+          create: (options: any) => void;
+        };
+      };
+    }
+  }
+
   window.addEventListener('load', function() {
     // Only load the script once across the whole page, even if multiple QuoteForms exist
     if (!window.hbsptScriptAdded) {
@@ -52,7 +64,8 @@ const cardClasses = isHero
     // Find all quote form containers and render a form inside them
     var containers = document.querySelectorAll('.hubspot-form-container');
     
-    containers.forEach(function(container, index) {
+    containers.forEach(function(el, index) {
+      const container = el as HTMLElement;
       if (container.dataset.rendered === 'true') return;
       container.dataset.rendered = 'true';
       
@@ -62,7 +75,7 @@ const cardClasses = isHero
       container.innerHTML = ''; // Clear previous contents
       
       // Standard reliable programatic embed
-      window.hbspt.forms.create({
+      window.hbspt?.forms.create({
         region: "na2",
         portalId: "244830458",
         formId: "e4e37c82-1229-4392-a31f-6a5f09ec1bb6",
@@ -71,6 +84,17 @@ const cardClasses = isHero
       });
     });
   }
+
+  // Handle Astro View Transitions (re-initialization on page changes)
+  document.addEventListener('astro:page-load', () => {
+    if (window.hbspt) {
+      // Clear old rendered flags because DOM changed
+      document.querySelectorAll('.hubspot-form-container').forEach(el => {
+         (el as HTMLElement).dataset.rendered = 'false';
+      });
+      initializeHubSpotForms();
+    }
+  });
 </script>
 
 <!-- Fallback: global CSS for any inline rendering (non-shadow, non-iframe) -->
