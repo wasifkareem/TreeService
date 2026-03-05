@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { Image } from 'astro:assets';
+import heroEmergency from '../assets/hero emergency.png';
+import dispatchImg from '../assets/dispatch.jpg';
+import inspectionImg from '../assets/inspection.jpg';
+import cleanupImg from '../assets/cleanup.jpg';
+---
+
+<Layout title="Emergency Tree Removal" description="24/7 Emergency tree removal services. Fast, safe, and reliable clearing of storm damage and fallen trees.">
+  <!-- Hero Section -->
+  <section class="relative  text-white overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
+    <!-- Background Image -->
+    <div class="absolute inset-0">
+      <Image src={heroEmergency} alt="Storm damaged tree" fetchpriority="high" loading="eager" decoding="sync" class="w-full h-full object-cover opacity-100 mix-blend-multiply" />
+      <div class="absolute inset-0 bg-gradient-to-t from-red-900 via-red-900/20 to-red-900/40"></div>
+    </div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white text-red-600 mb-8 animate-pulse shadow-lg shadow-white/20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight max-w-4xl">
+        24/7 Emergency Tree <span class="text-red-400">Removal</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-red-100 max-w-3xl mb-12 font-light">
+        Storm damage doesn't wait for business hours. We provide immediate response to secure your property and remove hazardous trees safely.
+      </p>
+      
+      <div class="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl max-w-2xl w-full">
+        <h2 class="text-2xl font-bold mb-4">Call Our Emergency Hotline</h2>
+        <a href="tel:5551234567" class="inline-flex items-center justify-center w-full py-4 text-3xl md:text-5xl font-black text-white bg-red-600 rounded-xl hover:bg-red-500 transition-colors tracking-wider shadow-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-12 md:w-12 mr-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+          </svg>
+          (555) 123-4567
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="py-24 bg-white relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-red-600 font-semibold tracking-wide uppercase text-sm mb-2">Our Process</h2>
+        <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Fast, Safe, Efficient Recovery</h3>
+        <p class="text-lg text-gray-600">When disaster strikes, you need a team that acts quickly and professionally to minimize further damage to your home and property.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+        <!-- Connecting Line -->
+        <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gray-200 z-0"></div>
+        
+        <!-- Step 1 -->
+        <div class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-40 h-40 rounded-full border-4 border-red-100 flex items-center justify-center mb-6 group-hover:border-red-500 group-hover:scale-105 transition-all duration-300 shadow-xl overflow-hidden relative">
+            <Image src={dispatchImg} width="400" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover" alt="Dispatch Truck" />
+            <div class="absolute top-2 right-2 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg border-2 border-white z-20">1</div>
+          </div>
+          <h4 class="text-xl font-bold text-gray-900 mb-3">Immediate Response</h4>
+          <p class="text-gray-700 text-lg leading-relaxed">Our dispatch team is available 24/7. We'll send an emergency crew to your location immediately after your call.</p>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-40 h-40 rounded-full border-4 border-red-100 flex items-center justify-center mb-6 group-hover:border-red-500 group-hover:scale-105 transition-all duration-300 shadow-xl overflow-hidden relative">
+            <Image src={inspectionImg} width="400" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover" alt="Arborist Inspection" />
+            <div class="absolute top-2 right-2 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg border-2 border-white z-20">2</div>
+          </div>
+          <h4 class="text-xl font-bold text-gray-900 mb-3">Site Assessment & Stabilization</h4>
+          <p class="text-gray-700 text-lg leading-relaxed">We assess the hazard, stabilize the tree if necessary, and develop a safe removal plan to prevent further property damage.</p>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-40 h-40 rounded-full border-4 border-red-100 flex items-center justify-center mb-6 group-hover:border-red-500 group-hover:scale-105 transition-all duration-300 shadow-xl overflow-hidden relative">
+            <Image src={cleanupImg} width="400" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover pb-4" alt="Tree Cleanup" />
+            <div class="absolute top-2 right-2 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg border-2 border-white z-20">3</div>
+          </div>
+          <h4 class="text-xl font-bold text-gray-900 mb-3">Safe Removal & Cleanup</h4>
+          <p class="text-gray-700 text-lg leading-relaxed">Using advanced rigging and cranes when needed, we safely extract the hazard and clean up all debris from your property.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA + Quote Form -->
+  <section class="py-20 bg-gray-50 border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Left: Emergency CTA -->
+        <div class="text-center lg:text-left">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Don't risk further damage.</h2>
+          <p class="text-xl text-gray-600 mb-8">If a tree has fallen on your home, vehicle, or is dangerously leaning, leave the area and call professionals immediately.</p>
+          <a href="tel:5551234567" class="inline-flex items-center justify-center bg-red-600 text-white font-bold px-8 py-4 rounded-full text-lg hover:bg-red-700 transition-colors shadow-lg transform hover:-translate-y-1">
+            Call (555) 123-4567 Now
+          </a>
+          <p class="mt-6 text-gray-500 text-base">Or fill out the form to request a quote for non-emergency service.</p>
+        </div>
+        <!-- Right: Quote Form -->
+        <div>
+          <QuoteForm variant="standalone" />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { Image } from 'astro:assets';
+import pruningImg from '../assets/pruning.jpg';
+import supportImg from '../assets/support.jpg';
+---
+
+<Layout title="Contact Us" description="Get in touch for a free estimate on our tree care services.">
+  <div class="relative bg-primary-900 py-24 text-center text-white overflow-hidden">
+    <!-- Background Image - NOTE: Update this URL with your attached relevant image -->
+    <div class="absolute inset-0">
+      <Image src={pruningImg} width="2670" height="1500" fetchpriority="high" loading="eager" decoding="sync" alt="Pruning and Trimming" class="w-full h-full object-cover opacity-20 mix-blend-multiply" />
+      <div class="absolute inset-0 bg-gradient-to-t from-primary-900 to-transparent"></div>
+    </div>
+    <div class="relative max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
+      <p class="text-xl text-primary-100 font-light max-w-2xl mx-auto">
+        Reach out today for a free estimate or to schedule your tree service. We look forward to working with you.
+      </p>
+    </div>
+  </div>
+  
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+        
+        <!-- Contact Information -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-8">Get In Touch</h2>
+          
+          <div class="space-y-8">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-xl bg-primary-100 text-primary-600">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-6">
+                <h3 class="text-xl font-bold text-gray-900">Office Location</h3>
+                <p class="mt-2 text-lg text-gray-600 leading-relaxed">
+                  123 Arborist Lane<br>
+                  Treeville, VA 22030
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-xl bg-primary-100 text-primary-600">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-6">
+                <h3 class="text-xl font-bold text-gray-900">Phone</h3>
+                <p class="mt-2 text-lg text-gray-600 leading-relaxed">
+                  <a href="tel:5551234567" class="hover:text-primary-600 transition-colors">(555) 123-4567</a><br>
+                  <span class="text-red-500 font-medium text-sm">24/7 strictly for emergencies</span>
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-12 w-12 rounded-xl bg-primary-100 text-primary-600">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-6">
+                <h3 class="text-xl font-bold text-gray-900">Email</h3>
+                <p class="mt-2 text-lg text-gray-600 leading-relaxed">
+                  <a href="mailto:info@greentreecare.com" class="hover:text-primary-600 transition-colors">info@greentreecare.com</a>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-12 mb-12">
+             <h3 class="text-xl font-bold text-gray-900 mb-4">Business Hours</h3>
+             <ul class="space-y-3 text-lg text-gray-600">
+               <li class="flex justify-between"><span>Mon - Fri:</span> <span>7:00 AM - 6:00 PM</span></li>
+               <li class="flex justify-between"><span>Saturday:</span> <span>8:00 AM - 4:00 PM</span></li>
+               <li class="flex justify-between"><span>Sunday:</span> <span>Closed</span></li>
+               <li class="flex justify-between text-red-500 font-semibold border-t border-gray-100 pt-3 mt-1"><span>Emergency Response:</span> <span>24/7/365</span></li>
+             </ul>
+          </div>
+          
+          <div class="rounded-2xl overflow-hidden shadow-lg border border-gray-100 relative h-64 mt-auto">
+            <Image src={supportImg} width="800" height="600" loading="lazy" decoding="async" class="w-full h-full object-cover" alt="Friendly Customer Support" />
+          </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="flex flex-col justify-center h-full">
+          <QuoteForm variant="standalone" />
+        </div>
+        
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,293 @@
+---
+/**
+ * Reusable Quote Form component — powered by HubSpot embedded form.
+ * Uses HubSpot's native embed snippet (renders inline shadow DOM, not iframe).
+ * CSS custom properties on the shadow host control the inner styling.
+ *
+ * Props:
+ *  - variant: 'hero' (dark bg context) | 'standalone' (white card on light bg)
+ */
+interface Props {
+  variant?: 'hero' | 'standalone';
+}
+
+const { variant = 'hero' } = Astro.props;
+
+const isHero = variant === 'hero';
+const cardClasses = isHero
+  ? 'bg-white/95 backdrop-blur-md border border-gray-100 rounded-2xl shadow-2xl'
+  : 'bg-white border border-gray-100 rounded-2xl  shadow-xl';
+---
+
+<div class:list={[cardClasses, 'max-w-lg w-full mx-auto quote-form-wrapper min-h-[500px] flex flex-col justify-center']}>
+  <!-- HubSpot Embedded Form -->
+  <div class="hubspot-form-container w-full">
+    <div
+      class="hs-form-frame"
+      data-region="na2"
+      data-form-id="e4e37c82-1229-4392-a31f-6a5f09ec1bb6"
+      data-portal-id="244830458"
+    ></div>
+  </div>
+</div>
+
+<!-- Lazy load HubSpot embed script to prevent main thread blocking causing LCP delays -->
+<script is:inline>
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var script = document.createElement('script');
+      script.src = 'https://js-na2.hsforms.net/forms/embed/244830458.js';
+      script.async = true;
+      document.head.appendChild(script);
+    }, 1500);
+  });
+</script>
+
+<!--
+  The native HubSpot embed renders inside a shadow DOM, so we style
+  the shadow host via CSS custom properties HubSpot exposes AND we
+  use a MutationObserver to inject a <style> into the shadow root once
+  the form renders.
+-->
+<script is:inline>
+  (function () {
+    // CSS to inject into HubSpot shadow roots
+   
+
+    function injectIntoShadow(shadowRoot) {
+      if (shadowRoot.querySelector('#hs-custom-css')) return; // already injected
+      var style = document.createElement('style');
+      style.id = 'hs-custom-css';
+      shadowRoot.appendChild(style);
+    }
+
+    function injectIntoIframe(iframe) {
+      try {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc || doc.querySelector('#hs-custom-css')) return;
+        var style = doc.createElement('style');
+        style.id = 'hs-custom-css';
+        style.textContent = customCSS;
+        (doc.head || doc.documentElement).appendChild(style);
+      } catch (e) {
+        // Cross-origin — can't inject
+      }
+    }
+
+    function processContainer(container) {
+      // Case 1: Shadow DOM (newer HubSpot embed)
+      container.querySelectorAll('.hs-form-frame').forEach(function (el) {
+        if (el.shadowRoot) {
+          injectIntoShadow(el.shadowRoot);
+        }
+      });
+
+      // Case 2: iframe (v2 API fallback)
+      container.querySelectorAll('iframe').forEach(function (iframe) {
+        injectIntoIframe(iframe);
+      });
+    }
+
+    // Observe the page for HubSpot form containers appearing
+    var observer = new MutationObserver(function (mutations) {
+      document.querySelectorAll('.hubspot-form-container').forEach(processContainer);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also run immediately and after a few delays (HubSpot loads async)
+    function tryInject() {
+      document.querySelectorAll('.hubspot-form-container').forEach(processContainer);
+    }
+
+    // Poll for shadow roots to appear since HubSpot embed loads async
+    var pollCount = 0;
+    var pollTimer = setInterval(function () {
+      tryInject();
+      pollCount++;
+      if (pollCount > 30) clearInterval(pollTimer); // stop after ~15 seconds
+    }, 500);
+  })();
+</script>
+
+<!-- Fallback: global CSS for any inline rendering (non-shadow, non-iframe) -->
+<style is:global>
+  .hubspot-form-container {
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Visually hide labels but keep accessible to screen readers */
+  .hubspot-form-container label.hs-form-label,
+  .hubspot-form-container .hs-form label:not(.hs-error-msg) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .hubspot-form-container .hs-richtext,
+  .hubspot-form-container .form-title,
+  .hubspot-form-container .hs-form-title {
+    display: none !important;
+  }
+
+  .hubspot-form-container .hubspot-link__container {
+    display: none !important;
+  }
+
+  .hubspot-form-container .hs-form-field {
+    margin-bottom: 8px !important;
+  }
+
+  .hubspot-form-container fieldset {
+    margin: 0 0 6px 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    max-width: 100% !important;
+  }
+
+  .hubspot-form-container fieldset.form-columns-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .hubspot-form-container fieldset.form-columns-2 .hs-form-field {
+    width: 100% !important;
+    float: none !important;
+    padding: 0 !important;
+  }
+
+  .hubspot-form-container fieldset.form-columns-1 .hs-form-field {
+    width: 100% !important;
+  }
+
+  .hubspot-form-container .input {
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .hubspot-form-container form {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .hubspot-form-container .hs_submit {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .hubspot-form-container input[type="text"],
+  .hubspot-form-container input[type="email"],
+  .hubspot-form-container input[type="tel"],
+  .hubspot-form-container input[type="number"],
+  .hubspot-form-container input[type="url"],
+  .hubspot-form-container textarea,
+  .hubspot-form-container select {
+    width: 100% !important;
+    background-color: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
+    color: #1f2937 !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+  }
+
+  .hubspot-form-container input::placeholder,
+  .hubspot-form-container textarea::placeholder {
+    color: #6b7280 !important;
+  }
+
+  .hubspot-form-container input:focus,
+  .hubspot-form-container textarea:focus,
+  .hubspot-form-container select:focus {
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.4) !important;
+  }
+
+  .hubspot-form-container .hs-input {
+    width: 100% !important;
+  }
+
+  .hubspot-form-container select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    padding-right: 40px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px !important;
+  }
+
+  .hubspot-form-container .hs-button,
+  .hubspot-form-container input[type="submit"] {
+    width: 100% !important;
+    background-color: #facc15 !important;
+    color: #000 !important;
+    font-weight: 900 !important;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    outline: 2px solid white !important;
+    outline-offset: -4px !important;
+    font-size: 18px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1) !important;
+    margin-top: 4px !important;
+  }
+
+  .hubspot-form-container .hs-button:hover,
+  .hubspot-form-container input[type="submit"]:hover {
+    background-color: #eab308 !important;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
+  }
+
+  .hubspot-form-container .hs-error-msgs {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 4px 0 0 0 !important;
+  }
+
+  .hubspot-form-container .hs-error-msgs li label,
+  .hubspot-form-container .hs-error-msg {
+    color: #dc2626 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    display: block !important;
+  }
+
+  .hubspot-form-container .submitted-message {
+    text-align: center !important;
+    padding: 2rem 1rem !important;
+    color: #111827 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+
+  /* Make iframe full-width if HubSpot uses one */
+  .hubspot-form-container iframe {
+    width: 100% !important;
+    border: none !important;
+  }
+
+  @media (max-width: 640px) {
+    .hubspot-form-container fieldset.form-columns-2 {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
+

@@ -1,0 +1,30 @@
+---
+/**
+ * Custom component for rendering Sanity image blocks inside Portable Text.
+ * Used by astro-portabletext as: components={{ type: { image: SanityImage } }}
+ */
+import { urlFor } from '../sanity/client';
+
+const { node } = Astro.props;
+
+const imageUrl = node?.asset ? urlFor(node).width(1200).quality(85).url() : null;
+const alt = node?.alt || 'Blog image';
+const caption = node?.caption || '';
+---
+
+{imageUrl && (
+  <figure class="blog-inline-image">
+    <img
+      src={imageUrl}
+      alt={alt}
+      width="1200"
+      height="800"
+      style={`aspect-ratio: ${node?.asset?.metadata?.dimensions?.aspectRatio || '3/2'}; height: auto;`}
+      loading="lazy"
+      decoding="async"
+    />
+    {caption && (
+      <figcaption>{caption}</figcaption>
+    )}
+  </figure>
+)}
