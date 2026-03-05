@@ -21,93 +21,56 @@ const cardClasses = isHero
 
 <div class:list={[cardClasses, 'max-w-lg w-full mx-auto quote-form-wrapper min-h-[500px] flex flex-col justify-center']}>
   <!-- HubSpot Embedded Form -->
-  <div class="hubspot-form-container w-full">
-    <div
-      class="hs-form-frame"
-      data-region="na2"
-      data-form-id="e4e37c82-1229-4392-a31f-6a5f09ec1bb6"
-      data-portal-id="244830458"
-    ></div>
-  </div>
+  <div class="hubspot-form-container w-full"></div>
 </div>
 
-<!-- Lazy load HubSpot embed script to prevent main thread blocking causing LCP delays -->
+<!-- Reliable HubSpot v2 Embed Script -->
 <script is:inline>
   window.addEventListener('load', function() {
-    setTimeout(function() {
+    // Only load the script once across the whole page, even if multiple QuoteForms exist
+    if (!window.hbsptScriptAdded) {
+      window.hbsptScriptAdded = true;
       var script = document.createElement('script');
-      script.src = 'https://js-na2.hsforms.net/forms/embed/244830458.js';
+      script.src = 'https://js-na2.hsforms.net/forms/embed/v2.js';
       script.async = true;
+      script.onload = initializeHubSpotForms;
       document.head.appendChild(script);
-    }, 1500);
-  });
-</script>
-
-<!--
-  The native HubSpot embed renders inside a shadow DOM, so we style
-  the shadow host via CSS custom properties HubSpot exposes AND we
-  use a MutationObserver to inject a <style> into the shadow root once
-  the form renders.
--->
-<script is:inline>
-  (function () {
-    // CSS to inject into HubSpot shadow roots
-   
-
-    function injectIntoShadow(shadowRoot) {
-      if (shadowRoot.querySelector('#hs-custom-css')) return; // already injected
-      var style = document.createElement('style');
-      style.id = 'hs-custom-css';
-      shadowRoot.appendChild(style);
-    }
-
-    function injectIntoIframe(iframe) {
-      try {
-        var doc = iframe.contentDocument || iframe.contentWindow.document;
-        if (!doc || doc.querySelector('#hs-custom-css')) return;
-        var style = doc.createElement('style');
-        style.id = 'hs-custom-css';
-        style.textContent = customCSS;
-        (doc.head || doc.documentElement).appendChild(style);
-      } catch (e) {
-        // Cross-origin — can't inject
-      }
-    }
-
-    function processContainer(container) {
-      // Case 1: Shadow DOM (newer HubSpot embed)
-      container.querySelectorAll('.hs-form-frame').forEach(function (el) {
-        if (el.shadowRoot) {
-          injectIntoShadow(el.shadowRoot);
+    } else if (window.hbspt) {
+      initializeHubSpotForms();
+    } else {
+      // Script is currently loading, poll for it
+      var checkInterval = setInterval(function() {
+        if (window.hbspt) {
+          clearInterval(checkInterval);
+          initializeHubSpotForms();
         }
-      });
-
-      // Case 2: iframe (v2 API fallback)
-      container.querySelectorAll('iframe').forEach(function (iframe) {
-        injectIntoIframe(iframe);
-      });
+      }, 100);
     }
+  });
 
-    // Observe the page for HubSpot form containers appearing
-    var observer = new MutationObserver(function (mutations) {
-      document.querySelectorAll('.hubspot-form-container').forEach(processContainer);
+  function initializeHubSpotForms() {
+    // Find all quote form containers and render a form inside them
+    var containers = document.querySelectorAll('.hubspot-form-container');
+    
+    containers.forEach(function(container, index) {
+      if (container.dataset.rendered === 'true') return;
+      container.dataset.rendered = 'true';
+      
+      // Give each container a unique ID for HubSpot target
+      var targetId = 'hs-form-target-' + Math.random().toString(36).substr(2, 9) + '-' + index;
+      container.id = targetId;
+      container.innerHTML = ''; // Clear previous contents
+      
+      // Standard reliable programatic embed
+      window.hbspt.forms.create({
+        region: "na2",
+        portalId: "244830458",
+        formId: "e4e37c82-1229-4392-a31f-6a5f09ec1bb6",
+        target: '#' + targetId,
+        css: "" // Use an empty string so it relies on your global CSS wrapper!
+      });
     });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Also run immediately and after a few delays (HubSpot loads async)
-    function tryInject() {
-      document.querySelectorAll('.hubspot-form-container').forEach(processContainer);
-    }
-
-    // Poll for shadow roots to appear since HubSpot embed loads async
-    var pollCount = 0;
-    var pollTimer = setInterval(function () {
-      tryInject();
-      pollCount++;
-      if (pollCount > 30) clearInterval(pollTimer); // stop after ~15 seconds
-    }, 500);
-  })();
+  }
 </script>
 
 <!-- Fallback: global CSS for any inline rendering (non-shadow, non-iframe) -->
